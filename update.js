@@ -1,0 +1,64 @@
+http = require('http')
+url = require('url')
+qs = require('querystring')
+
+
+let em="c";
+let p="g";
+
+function onRequest(request,response)
+{
+    var path=url.parse(request.url).pathname;
+    console.log("Request for "+path+" recieved");
+    var query=url.parse(request.url).query;
+    var email=qs.parse(query)["email"];
+    em=email;
+    var pass=qs.parse(query)["psw"];
+    p=pass;
+   //response.write("Hello "+name+" "+lname+"\n"+"Your email: "+email+"\n"+"Mobile number: "+phno+"\n"+"Gender: "+gend+"\n");
+
+    response.write("Your password has been successfully updated!!\n"+email+"\nUPDATED PASSWORD :"+pass);
+    response.end();
+    updatedata();
+}
+http.createServer(onRequest).listen(5555);
+console.log("Server is running now....");
+const mongoose =require("mongoose")
+const urla = "mongodb://localhost:27017/local";
+const name1 = new mongoose.Schema({ name: String, email: String, password: String });
+
+const Name= mongoose.model('Name',name1)
+
+const db = async() =>{
+    try{    
+    console.log("entered")    
+    const data=await mongoose.connect(urla,    
+    {    
+        useNewUrlParser: true,    
+        useUnifiedTopology: true,    
+        family: 4,    
+    }
+    )
+    console.log("connected")
+    }    
+    catch(err){    
+    console.log(err)    
+    }    
+}
+db()
+    
+        const updatedata=async() => {
+
+            const filter = {email:em };
+            
+            const update = { password:p};
+            
+            let doc = await Name.findOneAndUpdate(filter, update);
+            
+           // console.log(doc.Email); // 'Luke Skywalker'
+            
+            //console.log(doc.Status); // undefined
+            
+            }
+
+
